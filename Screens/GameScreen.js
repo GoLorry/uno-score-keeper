@@ -11,10 +11,11 @@ import {
 import { useIsFocused } from '@react-navigation/core';
 import PlayerCard from '../components/PlayerCard';
 import { Context } from '../App';
-
-const GameScreen = ({ navigation }) => {
+import { withTheme } from 'react-native-paper';
+const GameScreen = ({ navigation,theme }) => {
   const renderPlayerCard = (itemData) => <PlayerCard navigation={navigation} name={itemData.item.name} score={itemData.item.score} />;
   const isFocused = useIsFocused();
+  const {colors} = theme
 
   useEffect(() => {
     setRerender(1 - reRender);
@@ -26,6 +27,16 @@ const GameScreen = ({ navigation }) => {
 
   const { changePlayerData } = state;
   const { winPoints } = state;
+
+  const styles = StyleSheet.create({
+    text: {
+      fontSize: 20,
+    },
+    screen: {
+      alignItems: 'center',
+      backgroundColor : colors.background
+    },
+  });
   return (
     <ScrollView>
       <View style={styles.screen}>
@@ -42,13 +53,6 @@ const GameScreen = ({ navigation }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  text: {
-    fontSize: 20,
-  },
-  screen: {
-    alignItems: 'center',
-  },
-});
 
-export default GameScreen;
+
+export default withTheme(GameScreen);

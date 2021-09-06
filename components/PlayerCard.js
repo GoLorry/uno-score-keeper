@@ -11,7 +11,7 @@ import {
   LayoutAnimation,
 } from 'react-native';
 import { Context } from '../App';
-
+import { withTheme } from 'react-native-paper';
 if (
   Platform.OS === 'android'
     && UIManager.setLayoutAnimationEnabledExperimental
@@ -19,6 +19,83 @@ if (
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
 const PlayerCard = (props) => {
+  const {colors} = props.theme
+  styles = StyleSheet.create({
+    card: {
+      backgroundColor: colors.surface,
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      marginHorizontal: 10,
+      marginVertical: 12,
+      height: 110,
+      borderRadius: 5,
+      elevation: 2,
+    },
+    buttonsContainer: {
+      flex: 3,
+      //   backgroundColor : 'blue'
+    },
+    incrementButtonsContainer: {
+      justifyContent: 'space-between',
+      flexDirection: 'row',
+      paddingTop: 10,
+      marginRight: 10,
+      height: '60%',
+    },
+    detailsContainer: {
+      flex: 1,
+      paddingHorizontal: 30,
+      paddingVertical: 30,
+      alignItems: 'center',
+    },
+    button: {
+      borderRadius: 10,
+      backgroundColor: colors.primary,
+      marginBottom: 10,
+      marginHorizontal: 5,
+      width: 40,
+      paddingTop: 10,
+      alignItems: 'center',
+      elevation: 3,
+    },
+    buttonText: {
+      color: colors.text,
+      paddingBottom: 10,
+    },
+    nameText: {
+      fontSize: 14,
+    },
+    scoreText: {
+      fontSize: 25,
+      fontWeight: '700',
+    },
+    customIncrementContainer: {
+      // backgroundColor: 'green',
+      height: 60,
+      paddingBottom: 20,
+      alignItems: 'center',
+      flexDirection: 'row',
+      marginLeft: 40,
+    },
+    input: {
+      borderBottomColor: 'black',
+      borderBottomWidth: 0.5,
+      width: 30,
+    },
+    customIncrementButton: {
+      backgroundColor: colors.accent,
+      width: 30,
+      height: 30,
+      marginLeft: 20,
+      padding: 5,
+      alignItems: 'center',
+      borderRadius: 15,
+      elevation: 3,
+    },
+    customButtonText: {
+      color: colors.text,
+    },
+  });
   const state = useContext(Context);
   const { playerData } = state;
   const currPlayerState = playerData.slice();
@@ -89,81 +166,6 @@ const PlayerCard = (props) => {
   );
 };
 
-styles = StyleSheet.create({
-  card: {
-    backgroundColor: '#ECF0F1',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginHorizontal: 10,
-    marginVertical: 12,
-    height: 110,
-    borderRadius: 5,
-    elevation: 2,
-  },
-  buttonsContainer: {
-    flex: 3,
-    //   backgroundColor : 'blue'
-  },
-  incrementButtonsContainer: {
-    justifyContent: 'space-between',
-    flexDirection: 'row',
-    paddingTop: 10,
-    marginRight: 10,
-    height: '60%',
-  },
-  detailsContainer: {
-    flex: 1,
-    paddingHorizontal: 30,
-    paddingVertical: 30,
-    alignItems: 'center',
-  },
-  button: {
-    borderRadius: 10,
-    backgroundColor: '#19193C',
-    marginBottom: 10,
-    marginHorizontal: 5,
-    width: 40,
-    paddingTop: 10,
-    alignItems: 'center',
-    elevation: 3,
-  },
-  buttonText: {
-    color: 'white',
-    paddingBottom: 10,
-  },
-  nameText: {
-    fontSize: 14,
-  },
-  scoreText: {
-    fontSize: 25,
-    fontWeight: '700',
-  },
-  customIncrementContainer: {
-    // backgroundColor: 'green',
-    height: 60,
-    paddingBottom: 20,
-    alignItems: 'center',
-    flexDirection: 'row',
-    marginLeft: 40,
-  },
-  input: {
-    borderBottomColor: 'black',
-    borderBottomWidth: 0.5,
-    width: 30,
-  },
-  customIncrementButton: {
-    backgroundColor: '#19193C',
-    width: 30,
-    height: 30,
-    marginLeft: 20,
-    padding: 5,
-    alignItems: 'center',
-    borderRadius: 15,
-    elevation: 3,
-  },
-  customButtonText: {
-    color: 'white',
-  },
-});
 
-export default PlayerCard;
+
+export default withTheme(PlayerCard);

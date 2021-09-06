@@ -9,12 +9,20 @@
 import React, { useState, createContext } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { DefaultTheme,Provider as PaperProvider } from 'react-native-paper';
 import StartScreen from './Screens/StartScreen';
 import GameScreen from './Screens/GameScreen';
 import EndScreen from './Screens/EndScreen';
 
 export const Context = createContext();
-
+const theme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    primary: 'tomato',
+    accent: 'yellow',
+  },
+};
 const Stack = createNativeStackNavigator();
 const App = () => {
   const [numberOfPlayers, setNumberOfPlayers] = useState(2);
@@ -49,6 +57,7 @@ const App = () => {
         changeWinPoints: setWinPoints,
       }}
     >
+      <PaperProvider theme = {theme}>
       <NavigationContainer>
         <Stack.Navigator
           screenOptions={{
@@ -69,6 +78,8 @@ const App = () => {
           />
         </Stack.Navigator>
       </NavigationContainer>
+      </PaperProvider>
+      
     </Context.Provider>
   );
 };

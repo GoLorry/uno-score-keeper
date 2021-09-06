@@ -3,14 +3,122 @@ import React, { useContext, useState } from 'react';
 import {
   View,
   Text,
-  TextInput,
   StyleSheet,
   TouchableOpacity,
   FlatList,
 } from 'react-native';
 import { Context } from '../App';
+import { withTheme } from 'react-native-paper';
+import { TextInput, Button } from 'react-native-paper';
 
-const StartScreen = ({ navigation }) => {
+const StartScreen = (props) => {
+  const {colors} = props.theme
+  const styles = StyleSheet.create({
+    screen: {
+      flex: 1,
+      backgroundColor: colors.background,
+      paddingHorizontal: 10,
+      paddingVertical: 10,
+    },
+    headingContainer: {
+      alignItems: 'center',
+      height: '20%',
+      paddingTop: 15,
+      zIndex: 1,
+    },
+    heading: {
+      fontFamily: 'inter',
+      fontSize: 25,
+      color: colors.text,
+    },
+    detailsContainer: {
+      flex: 1,
+      marginBottom: 0,
+    },
+    text: {
+      fontSize: 14,
+      color: colors.text,
+    },
+    input: {
+      width: 50,
+      height: 30,
+      fontSize: 12,
+      paddingTop: 5,
+      color: colors.text,
+    },
+    startGameButton: {
+      backgroundColor: colors.primary,
+      height: 35,
+      marginHorizontal: 10,
+      borderRadius: 15,
+      alignItems: 'center',
+    },
+    buttonText: {
+      color: colors.text,
+      marginTop: 5,
+      fontSize: 16,
+    },
+    playerText: {
+      color: colors.text,
+      marginHorizontal: 20,
+    },
+    playerInput: {
+      borderBottomColor: colors.text,
+      borderBottomWidth: 0.4,
+      width: '80%',
+      paddingTop: 4,
+      fontSize: 14,
+      color: colors.placeholder,
+      marginHorizontal: 20,
+    },
+    playerCard: {
+      marginTop: 5,
+      marginBottom: 15,
+    },
+    settingsContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginHorizontal: 20,
+      marginBottom: 12,
+    },
+    list: {
+      marginBottom: 10,
+    },
+    buttonContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      margin: 15,
+      marginHorizontal: 30,
+    },
+    addButton: {
+      backgroundColor: colors.primary,
+      height: 30,
+      width: 10,
+      padding : 5,
+      alignItems: 'center',
+    },
+    removeButton: {
+      backgroundColor: colors.primary,
+      height: 30,
+      width: 30,
+      alignItems: 'center',
+    },
+    addRemoveButtonText: {
+      fontSize: 20,
+    },
+    addPlayerCard: {
+      paddingTop: 10,
+    },
+    addplayerInput: {
+      borderBottomColor: colors.primary,
+      borderBottomWidth: 0.4,
+      marginBottom: 5,
+      width: '80%',
+      marginHorizontal: 20,
+    },
+  
+  });
   const state = useContext(Context);
   const { playerData } = state;
   const { changePlayerData } = state;
@@ -22,24 +130,22 @@ const StartScreen = ({ navigation }) => {
   const renderPlayerInput = (itemData) => {
     const playerIndex = itemData.index;
     const playerName = itemData.item.name;
+    const label = 'Enter Player ' + (itemData.index+1)  + ' name'
     return (
       <View style={styles.playerCard}>
-        <Text style={styles.playerText}>
-          Player
-          {' '}
-          {playerIndex + 1}
-          {' '}
-          name:
-        </Text>
         <TextInput
-          style={styles.playerInput}
-          defaultValue={playerName}
+          mode="outlined"
+          label= {label}
+          right={<TextInput.Affix text="/100" />}
+          onblur={() => {
+            
+          }}
           onChangeText={(input) => {
-            playerData.forEach((part, index, theArray) => {
+            playerData.forEach((part, index, playerData) => {
               if (playerIndex === index) {
                 playerData[index].name = input;
               }
-              changePlayerData(playerData);
+              changePlayerData(playerData)
             });
           }}
         />
@@ -57,8 +163,8 @@ const StartScreen = ({ navigation }) => {
           <Text style={styles.text}>Number of players</Text>
           <TextInput
             style={styles.input}
-            defaultValue="2"
-            keyboardType="number-pad"
+            mode="outlined"
+            placeholder='2'
             maxLength={1}
             onChangeText={(input) => {
               const num = parseInt(input);
@@ -91,7 +197,9 @@ const StartScreen = ({ navigation }) => {
         <View>
           <Text style={styles.text}>Points to win</Text>
           <TextInput
-            style={styles.input}
+            style = {styles.input}
+            mode="outlined"
+            placeholder='2'
             keyboardType="number-pad"
             maxLength={3}
             defaultValue="100"
@@ -120,8 +228,9 @@ const StartScreen = ({ navigation }) => {
       </View>
       )}
       <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          style={styles.addButton}
+        <Button mode="contained"
+          icon = 'account-plus'
+          title = '+'
           onPress={() => {
             const newData = playerData.slice();
             const playerName = `Player ${numberOfPlayers + 1}`;
@@ -133,14 +242,11 @@ const StartScreen = ({ navigation }) => {
             changePlayerData(newData);
           }}
         >
-          <Text
-            style={styles.addRemoveButtonText}
-          >
-            +
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.removeButton}
+        </Button
+        >
+        <Button mode="contained"
+          icon = 'account-minus'
+          title = '+'
           onPress={() => {
             const newData = playerData.slice();
             changeNumber(numberOfPlayers - 1);
@@ -148,16 +254,11 @@ const StartScreen = ({ navigation }) => {
             changePlayerData(newData);
           }}
         >
-          <Text
-            style={styles.addRemoveButtonText}
-          >
-            -
-          </Text>
-        </TouchableOpacity>
+        </Button>
       </View>
       <TouchableOpacity
         style={styles.startGameButton}
-        onPress={() => navigation.navigate('Game Screen')}
+        onPress={() => props.navigation.navigate('Game Screen')}
       >
         <Text style={styles.buttonText}>Start Game</Text>
       </TouchableOpacity>
@@ -165,114 +266,5 @@ const StartScreen = ({ navigation }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-    backgroundColor: '#19193C',
-    paddingHorizontal: 10,
-    paddingVertical: 10,
-  },
-  headingContainer: {
-    alignItems: 'center',
-    height: '20%',
-    paddingTop: 33,
-    zIndex: 1,
-  },
-  heading: {
-    fontFamily: 'inter',
-    fontSize: 25,
-    color: 'white',
-  },
-  detailsContainer: {
-    flex: 1,
-    marginBottom: 0,
-  },
-  text: {
-    fontSize: 14,
-    color: 'white',
-  },
-  input: {
-    borderBottomColor: 'white',
-    borderBottomWidth: 0.4,
-    width: '40%',
-    height: 30,
-    fontSize: 12,
-    paddingTop: 5,
-    color: 'white',
-  },
-  startGameButton: {
-    backgroundColor: 'white',
-    height: 35,
-    marginHorizontal: 10,
-    borderRadius: 15,
-    alignItems: 'center',
-  },
-  buttonText: {
-    color: '#2ECC71',
-    marginTop: 5,
-    fontWeight: 'bold',
-    fontSize: 16,
-  },
-  playerText: {
-    color: 'white',
-    marginHorizontal: 20,
-  },
-  playerInput: {
-    borderBottomColor: 'white',
-    borderBottomWidth: 0.4,
-    width: '80%',
-    paddingTop: 4,
-    fontSize: 14,
-    color: '#c0cfc4',
-    marginHorizontal: 20,
-  },
-  playerCard: {
-    marginTop: 5,
-    marginBottom: 15,
-  },
-  settingsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginHorizontal: 20,
-    marginBottom: 12,
-  },
-  list: {
-    marginBottom: 10,
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 20,
-    marginHorizontal: 30,
-  },
-  addButton: {
-    backgroundColor: 'orange',
-    borderRadius: 15,
-    height: 30,
-    width: 30,
-    alignItems: 'center',
-  },
-  removeButton: {
-    backgroundColor: 'orange',
-    borderRadius: 15,
-    height: 30,
-    width: 30,
-    alignItems: 'center',
-  },
-  addRemoveButtonText: {
-    fontSize: 20,
-  },
-  addPlayerCard: {
-    paddingTop: 10,
-  },
-  addplayerInput: {
-    borderBottomColor: 'white',
-    borderBottomWidth: 0.4,
-    marginBottom: 5,
-    width: '80%',
-    marginHorizontal: 20,
-  },
 
-});
-export default StartScreen;
+export default withTheme(StartScreen);

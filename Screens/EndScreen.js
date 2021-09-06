@@ -3,14 +3,44 @@ import {
   View, Text, StyleSheet, TouchableOpacity,
 } from 'react-native';
 import { Context } from '../App';
-
-const EndScreen = ({ navigation }) => {
+import { withTheme } from 'react-native-paper';
+const EndScreen = ({ navigation,theme }) => {
   const state = useContext(Context);
   const winner = state.playerData[0].name;
   const { changePlayerData } = state;
-  playerData = state.playerData;
+  const playerData = state.playerData;
   const { numberOfPlayers } = state;
   const { changeNumber } = state;
+  const {colors} = theme
+
+  const styles = StyleSheet.create({
+    textContainer: {
+      alignItems: 'center',
+      marginHorizontal: 50,
+      marginTop: 50,
+    },
+    text: {
+      fontSize: 30,
+      textAlign: 'justify',
+    },
+    button: {
+      marginTop: 20,
+      alignItems: 'center',
+      backgroundColor: colors.primary,
+      marginHorizontal: 20,
+      height: 50,
+      alignItems: 'center',
+      borderRadius: 10,
+      elevation: 3,
+      marginBottom: 10,
+  
+    },
+    buttonText: {
+      fontSize: 24,
+      color: colors.text,
+      paddingTop: 5,
+    },
+  });
 
   return (
     <View>
@@ -59,33 +89,6 @@ const EndScreen = ({ navigation }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  textContainer: {
-    alignItems: 'center',
-    marginHorizontal: 50,
-    marginTop: 50,
-  },
-  text: {
-    fontSize: 30,
-    textAlign: 'justify',
-  },
-  button: {
-    marginTop: 20,
-    alignItems: 'center',
-    backgroundColor: '#19193C',
-    marginHorizontal: 20,
-    height: 50,
-    alignItems: 'center',
-    borderRadius: 10,
-    elevation: 3,
-    marginBottom: 10,
 
-  },
-  buttonText: {
-    fontSize: 24,
-    color: 'white',
-    paddingTop: 5,
-  },
-});
 
-export default EndScreen;
+export default withTheme(EndScreen);
