@@ -2,7 +2,6 @@ import React, { useContext, useState } from 'react';
 import {
   View,
   Text,
-  Button,
   TouchableOpacity,
   StyleSheet,
   FlatList,
@@ -10,8 +9,9 @@ import {
   UIManager,
   LayoutAnimation,
 } from 'react-native';
+import { Button, withTheme } from 'react-native-paper';
 import { Context } from '../App';
-import { withTheme } from 'react-native-paper';
+
 if (
   Platform.OS === 'android'
     && UIManager.setLayoutAnimationEnabledExperimental
@@ -19,10 +19,10 @@ if (
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
 const PlayerCard = (props) => {
-  const {colors} = props.theme
-  styles = StyleSheet.create({
+  const { colors } = props.theme;
+  const styles = StyleSheet.create({
     card: {
-      backgroundColor: colors.surface,
+      backgroundColor: colors.onsurface,
       flexDirection: 'row',
       justifyContent: 'space-between',
       marginHorizontal: 10,
@@ -49,7 +49,7 @@ const PlayerCard = (props) => {
       alignItems: 'center',
     },
     button: {
-      borderRadius: 10,
+      borderRadius: 4,
       backgroundColor: colors.primary,
       marginBottom: 10,
       marginHorizontal: 5,
@@ -64,10 +64,12 @@ const PlayerCard = (props) => {
     },
     nameText: {
       fontSize: 14,
+      color: colors.text,
     },
     scoreText: {
       fontSize: 25,
       fontWeight: '700',
+      color: colors.text,
     },
     customIncrementContainer: {
       // backgroundColor: 'green',
@@ -78,7 +80,7 @@ const PlayerCard = (props) => {
       marginLeft: 40,
     },
     input: {
-      borderBottomColor: 'black',
+      borderBottomColor: colors.text,
       borderBottomWidth: 0.5,
       width: 30,
     },
@@ -95,25 +97,40 @@ const PlayerCard = (props) => {
     customButtonText: {
       color: colors.text,
     },
+    eliminationContainer: {
+      padding : 30
+    },
+    eliminationText: {
+      color: colors.error,
+      fontSize : 16
+    }
   });
   const state = useContext(Context);
   const { playerData } = state;
   const currPlayerState = playerData.slice();
   const { changePlayerData } = state;
   const { winPoints } = state;
+  const { isEliminated } = props
+  const { changeNumber } = state
+  const {numberOfPlayers} = state
   const incrementScore = (val) => {
     currPlayerState.forEach((part, index, currPlayerState) => {
       if (currPlayerState[index].name === props.name) {
         currPlayerState[index].score = val + parseInt(currPlayerState[index].score);
-        if (playerData[0].score >= winPoints) {
-          props.navigation.navigate('End Screen');
-          return;
+        console.log('val', val);
+        console.log(currPlayerState[index].score);
+        if (playerData[index].score >= winPoints) {
+          playerData[index]['isEliminated'] = true
+          changeNumber(numberOfPlayers - 1)
+          changePlayerData(playerData)
+          if(numberOfPlayers === 2) props.navigation.navigate('End Screen')
+          
         }
-        currPlayerState.sort((a, b) => ((a.score > b.score) ? -1 : ((b.score > a.score) ? 1 : 0)));
-        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-        changePlayerData(currPlayerState);
       }
     });
+    currPlayerState.sort((a, b) => ((a.score > b.score) ? 1 : ((b.score > a.score) ? -1 : 0)));
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    changePlayerData(currPlayerState);
   };
   const [customIncrement, setCustomIncrement] = useState(0);
   return (
@@ -123,8 +140,17 @@ const PlayerCard = (props) => {
         <Text style={styles.nameText}>{props.name}</Text>
         <Text style={styles.scoreText}>{props.score}</Text>
       </View>
+
       <View style={styles.buttonsContainer}>
-        <View style={styles.incrementButtonsContainer}>
+        {isEliminated &&
+          <View style = {styles.eliminationContainer}>
+          <Text style = {styles.eliminationText}>
+            Eliminated
+          </Text>
+        </View>
+        }
+        {
+          !isEliminated && <View style={styles.incrementButtonsContainer}>
           <TouchableOpacity
             style={styles.button}
             onPress={incrementScore.bind(this, 1)}
@@ -146,7 +172,9 @@ const PlayerCard = (props) => {
             <Text style={styles.buttonText}>+50</Text>
           </TouchableOpacity>
         </View>
-        <View style={styles.customIncrementContainer}>
+        }
+        
+        {!isEliminated && <View style={styles.customIncrementContainer}>
           <TextInput
             style={styles.input}
             keyboardType="number-pad"
@@ -160,12 +188,11 @@ const PlayerCard = (props) => {
           >
             <Text style={styles.customButtonText}>+</Text>
           </TouchableOpacity>
-        </View>
+          </View>}
+        
       </View>
     </View>
   );
 };
-
-
 
 export default withTheme(PlayerCard);

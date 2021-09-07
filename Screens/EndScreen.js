@@ -2,18 +2,23 @@ import React, { useContext } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity,
 } from 'react-native';
-import { Context } from '../App';
 import { withTheme } from 'react-native-paper';
-const EndScreen = ({ navigation,theme }) => {
+import { Context } from '../App';
+
+const EndScreen = ({ navigation, theme }) => {
   const state = useContext(Context);
   const winner = state.playerData[0].name;
   const { changePlayerData } = state;
-  const playerData = state.playerData;
+  const { playerData } = state;
   const { numberOfPlayers } = state;
   const { changeNumber } = state;
-  const {colors} = theme
+  const { colors } = theme;
 
   const styles = StyleSheet.create({
+    screen: {
+      backgroundColor: colors.background,
+      flex: 1,
+    },
     textContainer: {
       alignItems: 'center',
       marginHorizontal: 50,
@@ -22,6 +27,7 @@ const EndScreen = ({ navigation,theme }) => {
     text: {
       fontSize: 30,
       textAlign: 'justify',
+      color: colors.text,
     },
     button: {
       marginTop: 20,
@@ -33,7 +39,7 @@ const EndScreen = ({ navigation,theme }) => {
       borderRadius: 10,
       elevation: 3,
       marginBottom: 10,
-  
+
     },
     buttonText: {
       fontSize: 24,
@@ -43,7 +49,7 @@ const EndScreen = ({ navigation,theme }) => {
   });
 
   return (
-    <View>
+    <View style={styles.screen}>
       <View style={styles.textContainer}>
         <Text style={styles.text}>
           {winner}
@@ -73,8 +79,9 @@ const EndScreen = ({ navigation,theme }) => {
       <TouchableOpacity
         style={styles.button}
         onPress={() => {
-          playerData.forEach((part, index, theArray) => {
+          playerData.forEach((part, index) => {
             playerData[index].score = 0;
+            playerData[index].isEliminated = false
           });
           playerData.sort((a, b) => ((a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0)));
           changePlayerData(playerData);
@@ -88,7 +95,5 @@ const EndScreen = ({ navigation,theme }) => {
     </View>
   );
 };
-
-
 
 export default withTheme(EndScreen);

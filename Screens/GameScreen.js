@@ -9,13 +9,14 @@ import {
   ScrollView,
 } from 'react-native';
 import { useIsFocused } from '@react-navigation/core';
+import { withTheme } from 'react-native-paper';
 import PlayerCard from '../components/PlayerCard';
 import { Context } from '../App';
-import { withTheme } from 'react-native-paper';
-const GameScreen = ({ navigation,theme }) => {
-  const renderPlayerCard = (itemData) => <PlayerCard navigation={navigation} name={itemData.item.name} score={itemData.item.score} />;
+
+const GameScreen = ({ navigation, theme }) => {
+  const renderPlayerCard = (itemData) => <PlayerCard navigation={navigation} name={itemData.item.name} score={itemData.item.score} isEliminated={itemData.item.isEliminated }/>;
   const isFocused = useIsFocused();
-  const {colors} = theme
+  const { colors } = theme;
 
   useEffect(() => {
     setRerender(1 - reRender);
@@ -31,15 +32,17 @@ const GameScreen = ({ navigation,theme }) => {
   const styles = StyleSheet.create({
     text: {
       fontSize: 20,
+      color: colors.text,
+      alignItems: 'center',
     },
     screen: {
-      alignItems: 'center',
-      backgroundColor : colors.background
+
+      backgroundColor: colors.background,
     },
   });
   return (
-    <ScrollView>
-      <View style={styles.screen}>
+    <ScrollView style={styles.screen}>
+      <View style={{ alignItems: 'center' }}>
         <Text style={styles.text}>
           {playerData[0].name}
           {' '}
@@ -52,7 +55,5 @@ const GameScreen = ({ navigation,theme }) => {
 
   );
 };
-
-
 
 export default withTheme(GameScreen);

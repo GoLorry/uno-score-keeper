@@ -7,12 +7,13 @@ import {
   TouchableOpacity,
   FlatList,
 } from 'react-native';
+import {
+  DefaultTheme, withTheme, DarkTheme, TextInput, Button,
+} from 'react-native-paper';
 import { Context } from '../App';
-import { withTheme } from 'react-native-paper';
-import { TextInput, Button } from 'react-native-paper';
 
 const StartScreen = (props) => {
-  const {colors} = props.theme
+  const { colors } = props.theme;
   const styles = StyleSheet.create({
     screen: {
       flex: 1,
@@ -44,7 +45,7 @@ const StartScreen = (props) => {
       height: 30,
       fontSize: 12,
       paddingTop: 5,
-      color: colors.text,
+      color: colors.placeholder,
     },
     startGameButton: {
       backgroundColor: colors.primary,
@@ -95,7 +96,7 @@ const StartScreen = (props) => {
       backgroundColor: colors.primary,
       height: 30,
       width: 10,
-      padding : 5,
+      padding: 5,
       alignItems: 'center',
     },
     removeButton: {
@@ -117,7 +118,7 @@ const StartScreen = (props) => {
       width: '80%',
       marginHorizontal: 20,
     },
-  
+
   });
   const state = useContext(Context);
   const { playerData } = state;
@@ -125,27 +126,30 @@ const StartScreen = (props) => {
   const { changeNumber } = state;
   const { numberOfPlayers } = state;
   const { changeWinPoints } = state;
+  const { theme, changeTheme } = state;
   const [isAdding, setIsAdding] = useState(false);
   const [newPlayer, setNewPlayer] = useState('');
+  console.log('int', numberOfPlayers);
   const renderPlayerInput = (itemData) => {
     const playerIndex = itemData.index;
     const playerName = itemData.item.name;
-    const label = 'Enter Player ' + (itemData.index+1)  + ' name'
+
+    const label = `Enter Player ${itemData.index + 1} name`;
     return (
       <View style={styles.playerCard}>
         <TextInput
           mode="outlined"
-          label= {label}
+          label={label}
           right={<TextInput.Affix text="/100" />}
           onblur={() => {
-            
+
           }}
           onChangeText={(input) => {
             playerData.forEach((part, index, playerData) => {
               if (playerIndex === index) {
                 playerData[index].name = input;
               }
-              changePlayerData(playerData)
+              changePlayerData(playerData);
             });
           }}
         />
@@ -164,8 +168,7 @@ const StartScreen = (props) => {
           <TextInput
             style={styles.input}
             mode="outlined"
-            placeholder='2'
-            maxLength={1}
+            maxLength={10}
             onChangeText={(input) => {
               const num = parseInt(input);
               if (input.length == 0) {
@@ -180,6 +183,7 @@ const StartScreen = (props) => {
                   playerData.push({
                     name: playerName,
                     score: 0,
+                    isEliminated: false,
                   });
                 }
                 changeNumber(num);
@@ -190,6 +194,7 @@ const StartScreen = (props) => {
                 }
               }
               changeNumber(num);
+              setNumString(toString(num));
               changePlayerData(playerData);
             }}
           />
@@ -197,9 +202,9 @@ const StartScreen = (props) => {
         <View>
           <Text style={styles.text}>Points to win</Text>
           <TextInput
-            style = {styles.input}
+            style={styles.input}
             mode="outlined"
-            placeholder='2'
+            placeholder="2"
             keyboardType="number-pad"
             maxLength={3}
             defaultValue="100"
@@ -228,9 +233,10 @@ const StartScreen = (props) => {
       </View>
       )}
       <View style={styles.buttonContainer}>
-        <Button mode="contained"
-          icon = 'account-plus'
-          title = '+'
+        <Button
+          mode="contained"
+          icon="account-plus"
+          title="+"
           onPress={() => {
             const newData = playerData.slice();
             const playerName = `Player ${numberOfPlayers + 1}`;
@@ -238,23 +244,30 @@ const StartScreen = (props) => {
             newData.push({
               name: playerName,
               score: 0,
+              isEliminated: false,
             });
             changePlayerData(newData);
           }}
-        >
-        </Button
-        >
-        <Button mode="contained"
-          icon = 'account-minus'
-          title = '+'
+        />
+        <Button
+          mode="contained"
+          icon="theme-light-dark"
+          onPress={() => {
+            if (theme === DefaultTheme) changeTheme(DarkTheme);
+            else changeTheme(DefaultTheme);
+          }}
+        />
+        <Button
+          mode="contained"
+          icon="account-minus"
+          title="+"
           onPress={() => {
             const newData = playerData.slice();
             changeNumber(numberOfPlayers - 1);
             newData.pop();
             changePlayerData(newData);
           }}
-        >
-        </Button>
+        />
       </View>
       <TouchableOpacity
         style={styles.startGameButton}
@@ -265,6 +278,5 @@ const StartScreen = (props) => {
     </View>
   );
 };
-
 
 export default withTheme(StartScreen);
